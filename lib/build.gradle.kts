@@ -2,6 +2,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
+    jacoco
     id("org.sonarqube") version "3.5.0.2730"
 }
 
@@ -16,6 +17,13 @@ java {
     withSourcesJar()
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
     }
 }
 

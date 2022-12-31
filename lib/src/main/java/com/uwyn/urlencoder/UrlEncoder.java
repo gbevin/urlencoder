@@ -32,10 +32,6 @@ public abstract class UrlEncoder {
         UNRESERVED_URI_CHARS = unreserved;
     }
 
-    private UrlEncoder() {
-        throw new IllegalStateException("UrlEncoder shouldn't be instantiated");
-    }
-
     private static void appendUrlEncodedByte(StringBuilder out, int ch) {
         out.append("%");
         appendUrlEncodedDigit(out, ch >> 4);
