@@ -12,6 +12,7 @@ base {
     archivesName.set("urlencoder")
     version = "0.9-SNAPSHOT"
 }
+
 java {
     withJavadocJar()
     withSourcesJar()
@@ -23,16 +24,16 @@ java {
 tasks.jacocoTestReport {
     reports {
         xml.required.set(true)
-        html.required.set(true)
     }
 }
 
 sonarqube {
     properties {
         property("sonar.projectName", rootProject.name)
-        property("sonar.projectKey", "gbevin_urlencoder")
+        property("sonar.projectKey", "gbevin_${rootProject.name}")
         property("sonar.organization", "gbevin")
         property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.sourceEncoding", "UTF-8")
     }
 }
 repositories {
