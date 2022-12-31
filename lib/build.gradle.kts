@@ -69,6 +69,12 @@ publishing {
                         name.set("Geert Bevin")
                         email.set("gbevin@uwyn.com")
                     }
+                    developer {
+                        id.set("ethauvin")
+                        name.set("Erik C. Thauvin")
+                        email.set("erik@thauvin.net")
+                        url.set("https://erik.thauvin.net/")
+                    }
                 }
                 scm {
                     connection.set("scm:git:https://github.com/gbevin/urlencoder.git")

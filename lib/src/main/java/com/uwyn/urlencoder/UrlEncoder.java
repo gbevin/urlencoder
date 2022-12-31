@@ -13,6 +13,7 @@ import java.util.BitSet;
  * Rules determined by <a href="https://www.rfc-editor.org/rfc/rfc3986#page-13">RFC 3986</a>.
  *
  * @author Geert Bevin (gbevin[remove] at uwyn dot com)
+ * @author Erik C. Thauvin (erik@thauvin.net)
  * @since 1.0
  */
 public abstract class UrlEncoder {
