@@ -16,26 +16,147 @@ import java.util.BitSet;
  * @since 1.0
  */
 public class UrlEncoder {
+    static final BitSet UNRESERVED_URI_CHARS;
+    private static final char[] HEX_DIGITS = "0123456789ABCDEF".toCharArray();
+
+    static {
+        // see https://www.rfc-editor.org/rfc/rfc3986#page-13
+        var unreserved = new BitSet('~' + 1);
+        unreserved.set('-');
+        unreserved.set('.');
+        for (int c = '0'; c <= '9'; ++c) unreserved.set(c);
+        for (int c = 'A'; c <= 'Z'; ++c) unreserved.set(c);
+        unreserved.set('_');
+        for (int c = 'a'; c <= 'z'; ++c) unreserved.set(c);
+        unreserved.set('~');
+        UNRESERVED_URI_CHARS = unreserved;
+    }
+
+    private static void appendUrlEncodedByte(StringBuilder out, int ch) {
+        out.append("%");
+        appendUrlEncodedDigit(out, ch >> 4);
+        appendUrlEncodedDigit(out, ch);
+    }
+
+    private static void appendUrlEncodedDigit(StringBuilder out, int digit) {
+        out.append(HEX_DIGITS[digit & 0x0F]);
+    }
+
+    /**
+     * Transforms a provided <code>String</code> URL into a new string,
+     * containing decoded URL characters in the UTF-8 encoding.
+     *
+     * @param source The string URL that has to be decoded
+     * @return The decoded <code>String</code> object.
+     * @see #encode(String, String)
+     * @since 1.0
+     */
+    public static String decode(String source) {
+        if (source == null || source.isBlank()) {
+            return source;
+        }
+
+        var length = source.length();
+        StringBuilder out = null;
+        char ch;
+        byte[] bytes_buffer = null;
+        var bytes_pos = 0;
+        for (var i = 0; i < length; ) {
+            ch = source.charAt(i);
+
+            if (ch == '%') {
+                if (out == null) {
+                    out = new StringBuilder(length);
+                    out.append(source, 0, i);
+                }
+
+                if (bytes_buffer == null) {
+                    // the remaining characters divided by the length
+                    // of the encoding format %xx, is the maximum number of
+                    // bytes that can be extracted
+                    bytes_buffer = new byte[(length - i) / 3];
+                    bytes_pos = 0;
+                }
+
+                i += 1;
+                if (length < i + 2) {
+                    throw new IllegalArgumentException("Illegal escape sequence");
+                }
+                try {
+                    var v = Integer.parseInt(source, i, i + 2, 16);
+                    if (v < 0 || v > 0xFF) {
+                        throw new IllegalArgumentException("Illegal escape value");
+                    }
+
+                    bytes_buffer[bytes_pos++] = (byte) v;
+
+                    i += 2;
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Illegal characters in escape sequence: " + e.getMessage());
+                }
+            } else {
+                if (bytes_buffer != null) {
+                    out.append(new String(bytes_buffer, 0, bytes_pos, StandardCharsets.UTF_8));
+
+                    bytes_buffer = null;
+                    bytes_pos = 0;
+                }
+
+                if (out != null) {
+                    out.append(ch);
+                }
+
+                i += 1;
+            }
+        }
+
+        if (out == null) {
+            return source;
+        }
+
+        if (bytes_buffer != null) {
+            out.append(new String(bytes_buffer, 0, bytes_pos, StandardCharsets.UTF_8));
+        }
+
+        return out.toString();
+    }
+
     /**
      * Transforms a provided <code>String</code> object into a new string,
      * containing only valid URL characters in the UTF-8 encoding.
      *
      * @param source The string that has to be transformed into a valid URL
      *               string.
+     * @param allow  Additional characters to allow.
      * @return The encoded <code>String</code> object.
      * @see #decode(String)
      * @since 1.0
      */
-    public static String encode(String source) {
-        if (source == null) {
-            return null;
+    public static String encode(String source, char... allow) {
+        return encode(source, new String(allow));
+    }
+
+    /**
+     * Transforms a provided <code>String</code> object into a new string,
+     * containing only valid URL characters in the UTF-8 encoding.
+     *
+     * @param source The string that has to be transformed into a valid URL
+     *               string.
+     * @param allow  Additional characters to allow.
+     * @return The encoded <code>String</code> object.
+     * @see #decode(String)
+     * @since 1.0
+     */
+    public static String encode(String source, String allow) {
+        if (source == null || source.isBlank()) {
+            return source;
         }
 
         StringBuilder out = null;
         char ch;
         for (var i = 0; i < source.length(); ) {
             ch = source.charAt(i);
-            if (isUnreservedUriChar(ch)) {
+            if (isUnreservedUriChar(ch) || allow.indexOf(ch) != -1) {
                 if (out != null) {
                     out.append(ch);
                 }
@@ -73,115 +194,8 @@ public class UrlEncoder {
         return out.toString();
     }
 
-    static final BitSet UNRESERVED_URI_CHARS;
-
-    static {
-        // see https://www.rfc-editor.org/rfc/rfc3986#page-13
-        var unreserved = new BitSet('~' + 1);
-        unreserved.set('-');
-        unreserved.set('.');
-        for (int c = '0'; c <= '9'; ++c) unreserved.set(c);
-        for (int c = 'A'; c <= 'Z'; ++c) unreserved.set(c);
-        unreserved.set('_');
-        for (int c = 'a'; c <= 'z'; ++c) unreserved.set(c);
-        unreserved.set('~');
-        UNRESERVED_URI_CHARS = unreserved;
-    }
-
     // see https://www.rfc-editor.org/rfc/rfc3986#page-13
     private static boolean isUnreservedUriChar(char ch) {
-        if (ch > '~') return false;
-        return UNRESERVED_URI_CHARS.get(ch);
-    }
-
-    private static final char[] HEX_DIGITS = "0123456789ABCDEF".toCharArray();
-
-    private static void appendUrlEncodedDigit(StringBuilder out, int digit) {
-        out.append(HEX_DIGITS[digit & 0x0F]);
-    }
-
-    private static void appendUrlEncodedByte(StringBuilder out, int ch) {
-        out.append("%");
-        appendUrlEncodedDigit(out, ch >> 4);
-        appendUrlEncodedDigit(out, ch);
-    }
-
-    /**
-     * Transforms a provided <code>String</code> URL into a new string,
-     * containing decoded URL characters in the UTF-8 encoding.
-     *
-     * @param source The string URL that has to be decoded
-     * @return The decoded <code>String</code> object.
-     * @see #encode(String)
-     * @since 1.0
-     */
-    public static String decode(String source) {
-        if (source == null) {
-            return source;
-        }
-
-        var length = source.length();
-        StringBuilder out = null;
-        char ch;
-        byte[] bytes_buffer = null;
-        var bytes_pos = 0;
-        for (var i = 0; i < length; ) {
-            ch = source.charAt(i);
-
-            if (ch == '%') {
-                if (out == null) {
-                    out = new StringBuilder(source.length());
-                    out.append(source, 0, i);
-                }
-
-                if (bytes_buffer == null) {
-                    // the remaining characters divided by the length
-                    // of the encoding format %xx, is the maximum number of
-                    // bytes that can be extracted
-                    bytes_buffer = new byte[(length - i) / 3];
-                    bytes_pos = 0;
-                }
-
-                i += 1;
-                if (length < i + 2) {
-                    throw new IllegalArgumentException("Illegal escape sequence");
-                }
-                try {
-                    var v = Integer.parseInt(source, i, i + 2, 16);
-                    if (v < 0 || v > 0xFF) {
-                        throw new IllegalArgumentException("Illegal escape value");
-                    }
-
-                    bytes_buffer[bytes_pos++] = (byte) v;
-
-                    i += 2;
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Illegal characters in escape sequence" + e.getMessage());
-                }
-            } else {
-                if (bytes_buffer != null) {
-                    out.append(new String(bytes_buffer, 0, bytes_pos, StandardCharsets.UTF_8));
-
-                    bytes_buffer = null;
-                    bytes_pos = 0;
-                }
-
-                if (out != null) {
-                    out.append(ch);
-                }
-
-                i += 1;
-            }
-        }
-
-        if (out == null) {
-            return source;
-        }
-
-        if (bytes_buffer != null) {
-            out.append(new String(bytes_buffer, 0, bytes_pos, StandardCharsets.UTF_8));
-        }
-
-        return out.toString();
+        return ch <= '~' && UNRESERVED_URI_CHARS.get(ch);
     }
 }
