@@ -2,6 +2,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
+    id("org.sonarqube") version "3.5.0.2730"
 }
 
 group = "com.uwyn"
@@ -18,6 +19,14 @@ java {
     }
 }
 
+sonarqube {
+    properties {
+        property("sonar.projectName", rootProject.name)
+        property("sonar.projectKey", "gbevin_urlencoder")
+        property("sonar.organization", "gbevin")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
 repositories {
     mavenCentral()
 }
