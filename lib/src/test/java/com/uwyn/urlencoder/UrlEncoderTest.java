@@ -6,48 +6,41 @@ package com.uwyn.urlencoder;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UrlEncoderTest {
-    @Test
-    public void testEncodeURL() {
-        assertNull(UrlEncoder.encode(null));
-        assertEquals("a%20test%20%26", UrlEncoder.encode("a test &"));
-        String valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~";
-        assertSame(valid, UrlEncoder.encode(valid));
-        assertEquals("%21abcdefghijklmnopqrstuvwxyz%25%25ABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~%3D", UrlEncoder.encode("!abcdefghijklmnopqrstuvwxyz%%ABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~="));
-        assertEquals("%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81", UrlEncoder.encode("%#okékÉȢ smile!😁"));
-    }
+    private String[] invalid = {"sdkjfh%", "sdkjfh%6", "sdkjfh%xx", "sdfjfh%-1"};
+    private String same = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~";
+    private Map<String, String> validMap = Map.of(
+            "a test &", "a%20test%20%26",
+            "!abcdefghijklmnopqrstuvwxyz%%ABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~=",
+            "%21abcdefghijklmnopqrstuvwxyz%25%25ABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~%3D",
+            "%#okékÉȢ smile!😁", "%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"
+    );
 
     @Test
     public void testDecodeURL() {
         assertNull(UrlEncoder.decode(null));
-        assertEquals("a test &", UrlEncoder.decode("a%20test%20%26"));
-        String valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~";
-        assertSame(valid, UrlEncoder.decode(valid));
-        assertEquals("!abcdefghijklmnopqrstuvwxyz%%ABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~=", UrlEncoder.decode("%21abcdefghijklmnopqrstuvwxyz%25%25ABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~%3D"));
-        assertEquals("%#okékÉȢ smile!😁", UrlEncoder.decode("%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"));
+        assertSame(same, UrlEncoder.decode(same));
+        validMap.forEach((expected, source) -> assertEquals(expected, UrlEncoder.decode(source)));
 
-        try {
-            UrlEncoder.decode("sdkjfh%");
-            fail();
-        } catch (Exception e) {
-            assertTrue(e instanceof IllegalArgumentException);
+        for (String i : invalid) {
+            assertThrows(IllegalArgumentException.class, () -> UrlEncoder.decode(i));
         }
+    }
 
-        try {
-            UrlEncoder.decode("sdkjfh%6");
-            fail();
-        } catch (Exception e) {
-            assertTrue(e instanceof IllegalArgumentException);
-        }
+    @Test
+    public void testEncodeURL() {
+        assertNull(UrlEncoder.encode(null));
+        assertTrue(UrlEncoder.encode("").isEmpty());
+        assertSame(same, UrlEncoder.encode(same));
+        assertSame(same, UrlEncoder.encode(same, ""));
+        validMap.forEach((source, expected) -> assertEquals(expected, UrlEncoder.encode(source)));
 
-        try {
-            UrlEncoder.decode("sdkjfh%xx");
-            fail();
-        } catch (Exception e) {
-            assertTrue(e instanceof IllegalArgumentException);
-        }
+        assertEquals("?test=a%20test", UrlEncoder.encode("?test=a test", "?="));
+        assertEquals("?test=a%20test", UrlEncoder.encode("?test=a test", '?', '='));
+        assertEquals("aaa", UrlEncoder.encode("aaa", 'a'));
     }
 }
