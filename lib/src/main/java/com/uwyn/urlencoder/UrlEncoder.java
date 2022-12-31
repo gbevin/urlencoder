@@ -132,6 +132,20 @@ public final class UrlEncoder {
      *
      * @param source The string that has to be transformed into a valid URL
      *               string.
+     * @return The encoded <code>String</code> object.
+     * @see #decode(String)
+     * @since 1.0
+     */
+    public static String encode(String source) {
+        return encode(source, (String)null);
+    }
+
+    /**
+     * Transforms a provided <code>String</code> object into a new string,
+     * containing only valid URL characters in the UTF-8 encoding.
+     *
+     * @param source The string that has to be transformed into a valid URL
+     *               string.
      * @param allow  Additional characters to allow.
      * @return The encoded <code>String</code> object.
      * @see #decode(String)
@@ -162,7 +176,7 @@ public final class UrlEncoder {
         var i = 0;
         while(i < source.length()) {
             ch = source.charAt(i);
-            if (isUnreservedUriChar(ch) || allow.indexOf(ch) != -1) {
+            if (isUnreservedUriChar(ch) || (allow != null && allow.indexOf(ch) != -1)) {
                 if (out != null) {
                     out.append(ch);
                 }
