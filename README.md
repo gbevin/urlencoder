@@ -1,3 +1,5 @@
+[![GitHub CI](https://github.com/gbevin/urlencoder/actions/workflows/gradle.yml/badge.svg)](https://github.com/gbevin/urlencoder/actions/workflows/gradle.yml)
+
 # URL Encoder for Java
 
 A simple library to encode/decode URL parameters.
