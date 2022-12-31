@@ -21,7 +21,7 @@ class UrlEncoderTest {
     );
 
     @Test
-    public void testDecodeURL() {
+    void testDecodeURL() {
         assertNull(UrlEncoder.decode(null));
         assertSame(same, UrlEncoder.decode(same));
         validMap.forEach((expected, source) -> assertEquals(expected, UrlEncoder.decode(source)));
@@ -32,7 +32,7 @@ class UrlEncoderTest {
     }
 
     @Test
-    public void testEncodeURL() {
+    void testEncodeURL() {
         assertNull(UrlEncoder.encode(null));
         assertTrue(UrlEncoder.encode("").isEmpty());
         assertSame(same, UrlEncoder.encode(same));

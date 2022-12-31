@@ -15,7 +15,7 @@ import java.util.BitSet;
  * @author Geert Bevin (gbevin[remove] at uwyn dot com)
  * @since 1.0
  */
-public class UrlEncoder {
+public abstract class UrlEncoder {
     static final BitSet UNRESERVED_URI_CHARS;
     private static final char[] HEX_DIGITS = "0123456789ABCDEF".toCharArray();
 
@@ -61,7 +61,8 @@ public class UrlEncoder {
         char ch;
         byte[] bytes_buffer = null;
         var bytes_pos = 0;
-        for (var i = 0; i < length; ) {
+        var i = 0;
+        while(i < length) {
             ch = source.charAt(i);
 
             if (ch == '%') {
