@@ -10,12 +10,16 @@ A simple library to encode/decode URL parameters.
 This library was extracted from the [RIFE2 Web Application Framework](https://rife2.com).  
 A Kotlin version can also be found at [https://github.com/ethauvin/urlencoder](https://github.com/ethauvin/urlencoder).
 
-For decades, we've been using [java.net.URLEncoder](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URLEncoder.html)
+For decades, we've been using `[java.net.URLEncoder](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URLEncoder.html)
 because of its improper naming. It is actually intended to encode HTML form
-parameters, not URLs.
+parameters, not URLs, causing the wrong escape sequences to be used.
+
+Additionally, java.net.URLEncoder allocates memory even when no encoding is
+necessary, significantly impacting performance. This library has a negligible
+performance impact when the string that is passed in doesn't need to be encoded.
 
 Android's [Uri.encode](https://developer.android.com/reference/android/net/Uri#encode(java.lang.String,%20java.lang.String))
-also addresses this issue.
+also addresses these issues.
 
 ## Examples (TL;DR)
 
