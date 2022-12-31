@@ -4,9 +4,11 @@ plugins {
     signing
 }
 
+group = "com.uwyn"
+
 base {
     archivesName.set("urlencoder")
-    version = 0.9
+    version = "0.9-SNAPSHOT"
 }
 java {
     withJavadocJar()
