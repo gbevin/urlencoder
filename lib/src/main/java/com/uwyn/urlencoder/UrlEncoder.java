@@ -76,7 +76,6 @@ public abstract class UrlEncoder {
                     // of the encoding format %xx, is the maximum number of
                     // bytes that can be extracted
                     bytes_buffer = new byte[(length - i) / 3];
-                    bytes_pos = 0;
                 }
 
                 i += 1;
