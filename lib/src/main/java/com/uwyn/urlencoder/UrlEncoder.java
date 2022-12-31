@@ -32,6 +32,10 @@ public abstract class UrlEncoder {
         UNRESERVED_URI_CHARS = unreserved;
     }
 
+    private UrlEncoder() {
+        throw new IllegalStateException("UrlEncoder shouldn't be instantiated");
+    }
+
     private static void appendUrlEncodedByte(StringBuilder out, int ch) {
         out.append("%");
         appendUrlEncodedDigit(out, ch >> 4);
@@ -155,7 +159,8 @@ public abstract class UrlEncoder {
 
         StringBuilder out = null;
         char ch;
-        for (var i = 0; i < source.length(); ) {
+        var i = 0;
+        while(i < source.length()) {
             ch = source.charAt(i);
             if (isUnreservedUriChar(ch) || allow.indexOf(ch) != -1) {
                 if (out != null) {
