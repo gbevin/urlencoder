@@ -18,10 +18,11 @@ parameters, not URLs, causing the wrong escape sequences to be used.
 
 Additionally, `java.net.URLEncoder` allocates memory even when no encoding is
 necessary, significantly impacting performance. This library has a negligible
-performance impact when the string that is passed in doesn't need to be encoded.
+performance impact when a specified string doesn't need to be encoded.
 
 Android's [Uri.encode](https://developer.android.com/reference/android/net/Uri#encode(java.lang.String,%20java.lang.String))
-also addresses these issues.
+also addresses these issues, but does not currently support [unicode surrogate pairs](https://learn.microsoft.com/en-us/globalization/encoding/surrogate-pairs).
+
 
 ## Examples (TL;DR)
 

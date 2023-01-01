@@ -7,10 +7,10 @@ plugins {
 }
 
 group = "com.uwyn"
+version = "1.0.1-SNAPSHOT"
 
 base {
-    archivesName.set("urlencoder")
-    version = "1.0.1-SNAPSHOT"
+    archivesName.set(rootProject.name)
 }
 
 java {
@@ -51,11 +51,11 @@ tasks.named<Test>("test") {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            artifactId = "urlencoder"
+            artifactId = rootProject.name
             from(components["java"])
             pom {
-                name.set("URL Encoder")
-                description.set("A simple library to encode/decode URL parameters.")
+                name.set("URLEncoder")
+                description.set("A simple library to encode/decode URL parameters")
                 url.set("https://github.com/gbevin/urlencoder")
                 licenses {
                     license {
