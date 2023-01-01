@@ -218,4 +218,40 @@ public final class UrlEncoder {
     private static boolean isUnreservedUriChar(char ch) {
         return ch <= '~' && UNRESERVED_URI_CHARS.get(ch);
     }
+
+    public static void main(String[] arguments) {
+        var valid_arguments = true;
+        if (arguments.length < 1 ||
+            arguments.length > 2) {
+            valid_arguments = false;
+        } else if (!arguments[0].startsWith("-")) {
+            if (arguments.length > 1) {
+                valid_arguments = false;
+            }
+        } else {
+            if (!arguments[0].equals("-e") &&
+                !arguments[0].equals("-d")) {
+                valid_arguments = false;
+            }
+        }
+
+        if (!valid_arguments) {
+            System.err.println("Usage : java " + UrlEncoder.class.getName() + " [-ed] text");
+            System.err.println("Encode and decode URL parameters.");
+            System.err.println("  -e  encode (default)");
+            System.err.println("  -d  decode");
+            System.exit(1);
+        }
+
+        if (1 == arguments.length) {
+            System.out.println(UrlEncoder.encode(arguments[0]));
+            System.exit(0);
+        } else if (arguments[0].equals("-e")) {
+            System.out.println(UrlEncoder.encode(arguments[1]));
+            System.exit(0);
+        }
+
+        System.out.println(UrlEncoder.decode(arguments[1]));
+        System.exit(0);
+    }
 }

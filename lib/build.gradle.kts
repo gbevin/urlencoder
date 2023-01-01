@@ -21,6 +21,12 @@ java {
     }
 }
 
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "com.uwyn.urlencoder.UrlEncoder"
+    }
+}
+
 tasks.jacocoTestReport {
     reports {
         xml.required.set(true)
