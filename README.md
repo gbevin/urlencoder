@@ -37,7 +37,7 @@ To use with [Gradle](https://gradle.org/), include the following dependency in y
 
 ```gradle
 dependencies {
-    implementation("com.uwyn:urlencoder:0.9-SNAPSHOT")
+    implementation("com.uwyn:urlencoder:1.0.0")
 }
 ```
 

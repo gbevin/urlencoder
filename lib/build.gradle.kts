@@ -10,7 +10,7 @@ group = "com.uwyn"
 
 base {
     archivesName.set("urlencoder")
-    version = "0.9-SNAPSHOT"
+    version = "1.0.0"
 }
 
 java {
