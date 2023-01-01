@@ -47,43 +47,43 @@ class UrlEncoderTest {
 
     @Test
     void testMainNoArgs() {
-        var result = UrlEncoder.handleMain(new String[0]);
+        var result = UrlEncoder.processMain(new String[0]);
         assertEquals(1, result.status);
-        assertTrue(result.output.contains(UrlEncoder.class.getName()));
+        assertTrue(result.output.contains("Usage :"));
     }
 
     @Test
     void testMainTooManyArgs() {
-        var result = UrlEncoder.handleMain(new String[] {"-x", "-g", "f"});
+        var result = UrlEncoder.processMain(new String[] {"-x", "-g", "f"});
         assertEquals(1, result.status);
-        assertTrue(result.output.contains(UrlEncoder.class.getName()));
+        assertTrue(result.output.contains("Usage :"));
     }
 
     @Test
     void testMainWrongArgs1() {
-        var result = UrlEncoder.handleMain(new String[] {"-p"});
+        var result = UrlEncoder.processMain(new String[] {"-p"});
         assertEquals(1, result.status);
-        assertTrue(result.output.contains(UrlEncoder.class.getName()));
+        assertTrue(result.output.contains("Usage :"));
     }
 
     @Test
     void testMainWrongArgs2() {
-        var result = UrlEncoder.handleMain(new String[] {"-x", "txt"});
+        var result = UrlEncoder.processMain(new String[] {"-x", "txt"});
         assertEquals(1, result.status);
-        assertTrue(result.output.contains(UrlEncoder.class.getName()));
+        assertTrue(result.output.contains("Usage :"));
     }
 
     @Test
     void testMainWrongArgs3() {
-        var result = UrlEncoder.handleMain(new String[] {"stuff", "txt"});
+        var result = UrlEncoder.processMain(new String[] {"stuff", "txt"});
         assertEquals(1, result.status);
-        assertTrue(result.output.contains(UrlEncoder.class.getName()));
+        assertTrue(result.output.contains("Usage :"));
     }
 
     @Test
     void testDecodeMainOption() {
         validMap.forEach((expected, source) -> {
-            var result = UrlEncoder.handleMain(new String[] {"-d", source});
+            var result = UrlEncoder.processMain(new String[] {"-d", source});
             assertEquals(0, result.status);
             assertEquals(expected, result.output);
         });
@@ -92,7 +92,7 @@ class UrlEncoderTest {
     @Test
     void testEncodeMainDefault() {
         validMap.forEach((source, expected) -> {
-            var result = UrlEncoder.handleMain(new String[] {source});
+            var result = UrlEncoder.processMain(new String[] {source});
             assertEquals(0, result.status);
             assertEquals(expected, result.output);
         });
@@ -101,7 +101,7 @@ class UrlEncoderTest {
     @Test
     void testEncodeMainOption() {
         validMap.forEach((source, expected) -> {
-            var result = UrlEncoder.handleMain(new String[] {"-e", source});
+            var result = UrlEncoder.processMain(new String[] {"-e", source});
             assertEquals(0, result.status);
             assertEquals(expected, result.output);
         });

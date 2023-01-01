@@ -5,7 +5,7 @@
 package com.uwyn.urlencoder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.BitSet;
+import java.util.*;
 
 /**
  * URL encoding and decoding.
@@ -229,46 +229,48 @@ public final class UrlEncoder {
         }
     }
 
-    static MainResult handleMain(String[] arguments) {
-        var valid_arguments = true;
-        if (arguments.length < 1 ||
-            arguments.length > 2) {
-            valid_arguments = false;
-        } else if (!arguments[0].startsWith("-")) {
-            if (arguments.length > 1) {
-                valid_arguments = false;
-            }
-        } else {
-            if (!arguments[0].equals("-e") &&
-                !arguments[0].equals("-d")) {
-                valid_arguments = false;
+    static MainResult processMain(String[] arguments) {
+        var valid_arguments = false;
+        var perform_decode = false;
+        var args = new ArrayList<>(List.of(arguments));
+        if (!args.isEmpty() && args.get(0).startsWith("-")) {
+            var option = args.remove(0);
+            if (option.equals("-d")) {
+                perform_decode = true;
+                valid_arguments = true;
+            } else if (option.equals("-e")) {
+                valid_arguments = true;
+            } else {
+                args.clear();
             }
         }
 
+        var text = "";
+        if (args.size() == 1) {
+            text = args.remove(0);
+            valid_arguments = true;
+        }
+
         if (!valid_arguments) {
-            return new MainResult("Usage : java " + UrlEncoder.class.getName() + " [-ed] text" + System.lineSeparator() +
+            return new MainResult("Usage : java -jar urlencoder-*.jar [-ed] text" + System.lineSeparator() +
                                   "Encode and decode URL parameters." + System.lineSeparator() +
                                   "  -e  encode (default)" + System.lineSeparator() +
                                   "  -d  decode", 1);
         }
-
-        if (1 == arguments.length) {
-            return new MainResult(UrlEncoder.encode(arguments[0]), 0);
-        } else if (arguments[0].equals("-e")) {
-            return new MainResult(UrlEncoder.encode(arguments[1]), 0);
+        if (perform_decode) {
+            return new MainResult(UrlEncoder.decode(text), 0);
+        } else {
+            return new MainResult(UrlEncoder.encode(text), 0);
         }
-
-        return new MainResult(UrlEncoder.decode(arguments[1]), 0);
     }
 
     public static void main(String[] arguments) {
-        var result = handleMain(arguments);
+        var result = processMain(arguments);
         if (result.status == 0) {
             System.out.println(result.output);
-            System.exit(0);
         } else {
             System.err.println(result.output);
-            System.exit(result.status);
         }
+        System.exit(result.status);
     }
 }

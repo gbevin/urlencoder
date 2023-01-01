@@ -1,4 +1,8 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
+    application
     `java-library`
     `maven-publish`
     signing
@@ -9,6 +13,9 @@ plugins {
 group = "com.uwyn"
 version = "1.0.1-SNAPSHOT"
 
+val mavenName = "UrlEncoder"
+val javaMainClass = "$group.${rootProject.name}.$mavenName"
+
 base {
     archivesName.set(rootProject.name)
 }
@@ -16,21 +23,12 @@ base {
 java {
     withJavadocJar()
     withSourcesJar()
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "com.uwyn.urlencoder.UrlEncoder"
-    }
-}
-
-tasks.jacocoTestReport {
-    reports {
-        xml.required.set(true)
-    }
+application {
+    mainClass.set(javaMainClass)
 }
 
 sonarqube {
@@ -50,8 +48,26 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }
 
-tasks.named<Test>("test") {
-    useJUnitPlatform()
+tasks {
+    jar {
+        manifest {
+            attributes["Main-Class"] = javaMainClass
+        }
+    }
+
+    withType<Test> {
+        useJUnitPlatform()
+        testLogging {
+            exceptionFormat = TestExceptionFormat.FULL
+            events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+        }
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.required.set(true)
+        }
+    }
 }
 
 publishing {
@@ -60,7 +76,7 @@ publishing {
             artifactId = rootProject.name
             from(components["java"])
             pom {
-                name.set("URLEncoder")
+                name.set(mavenName)
                 description.set("A simple library to encode/decode URL parameters")
                 url.set("https://github.com/gbevin/urlencoder")
                 licenses {
