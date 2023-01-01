@@ -249,7 +249,7 @@ public final class UrlEncoder {
             return new MainResult("Usage : java " + UrlEncoder.class.getName() + " [-ed] text" + System.lineSeparator() +
                                   "Encode and decode URL parameters." + System.lineSeparator() +
                                   "  -e  encode (default)" + System.lineSeparator() +
-                                  "  -d  decode" + System.lineSeparator(), 1);
+                                  "  -d  decode", 1);
         }
 
         if (1 == arguments.length) {
