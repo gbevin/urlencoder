@@ -44,4 +44,4 @@ dependencies {
 }
 ```
 
-Instructions for using with Maven, Ivy, etc. can be found on Maven Central.
+Instructions for using with Maven, Ivy, etc. can be found on [Maven Central](https://maven-badges.herokuapp.com/maven-central/com.uwyn/urlencoder).
