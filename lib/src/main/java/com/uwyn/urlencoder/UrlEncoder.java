@@ -264,6 +264,11 @@ public final class UrlEncoder {
         }
     }
 
+    /**
+     * Main method to encode/decode URLs on the command line
+     * @param arguments the command line arguments
+     * @since 1.1
+     */
     public static void main(String[] arguments) {
         var result = processMain(arguments);
         if (result.status == 0) {
