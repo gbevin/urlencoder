@@ -10,11 +10,11 @@ A simple library to encode/decode URL parameters.
 This library was extracted from the [RIFE2 Web Application Framework](https://rife2.com).  
 A Kotlin version can also be found at [https://github.com/ethauvin/urlencoder](https://github.com/ethauvin/urlencoder).
 
-For decades, we've been using `[java.net.URLEncoder](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URLEncoder.html)
+For decades, we've been using [java.net.URLEncoder](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URLEncoder.html)
 because of its improper naming. It is actually intended to encode HTML form
 parameters, not URLs, causing the wrong escape sequences to be used.
 
-Additionally, java.net.URLEncoder allocates memory even when no encoding is
+Additionally, `java.net.URLEncoder` allocates memory even when no encoding is
 necessary, significantly impacting performance. This library has a negligible
 performance impact when the string that is passed in doesn't need to be encoded.
 
@@ -25,12 +25,10 @@ also addresses these issues.
 
 ```java
 UrlEncoder.encode("a test &"); // -> "a%20test%20%26"
-UrlEncoder.encode("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~"); // -> "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~"
 UrlEncoder.encode("%#okékÉȢ smile!😁"); // -> "%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"
 UrlEncoder.encode("?test=a test", "?="); // -> ?test=a%20test
 
 UrlEncoder.decode("a%20test%20%26"); // -> "a test &"
-UrlEncoder.decode("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~"); // -> "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVQXYZ0123456789-_.~"
 UrlEncoder.decode("%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"); // -> "%#okékÉȢ smile!😁"
 ```
 
