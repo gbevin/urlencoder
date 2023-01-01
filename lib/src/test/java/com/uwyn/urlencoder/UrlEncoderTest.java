@@ -60,6 +60,20 @@ class UrlEncoderTest {
     }
 
     @Test
+    void testMainMissingEncodeText() {
+        var result = UrlEncoder.processMain(new String[] {"-e"});
+        assertEquals(1, result.status);
+        assertTrue(result.output.contains("Usage :"));
+    }
+
+    @Test
+    void testMainMissingDecodeText() {
+        var result = UrlEncoder.processMain(new String[] {"-d"});
+        assertEquals(1, result.status);
+        assertTrue(result.output.contains("Usage :"));
+    }
+
+    @Test
     void testMainWrongArgs1() {
         var result = UrlEncoder.processMain(new String[] {"-p"});
         assertEquals(1, result.status);

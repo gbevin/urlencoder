@@ -237,9 +237,9 @@ public final class UrlEncoder {
             var option = args.remove(0);
             if (option.equals("-d")) {
                 perform_decode = true;
-                valid_arguments = true;
+                valid_arguments = !args.isEmpty();
             } else if (option.equals("-e")) {
-                valid_arguments = true;
+                valid_arguments = !args.isEmpty();
             } else {
                 args.clear();
             }
