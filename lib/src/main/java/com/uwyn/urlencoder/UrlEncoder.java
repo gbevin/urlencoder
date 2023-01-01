@@ -67,7 +67,7 @@ public final class UrlEncoder {
         byte[] bytes_buffer = null;
         var bytes_pos = 0;
         var i = 0;
-        while(i < length) {
+        while (i < length) {
             ch = source.charAt(i);
 
             if (ch == '%') {
@@ -137,7 +137,7 @@ public final class UrlEncoder {
      * @since 1.0
      */
     public static String encode(String source) {
-        return encode(source, (String)null);
+        return encode(source, (String) null);
     }
 
     /**
@@ -174,7 +174,7 @@ public final class UrlEncoder {
         StringBuilder out = null;
         char ch;
         var i = 0;
-        while(i < source.length()) {
+        while (i < source.length()) {
             ch = source.charAt(i);
             if (isUnreservedUriChar(ch) || (allow != null && allow.indexOf(ch) != -1)) {
                 if (out != null) {
@@ -219,7 +219,17 @@ public final class UrlEncoder {
         return ch <= '~' && UNRESERVED_URI_CHARS.get(ch);
     }
 
-    public static void main(String[] arguments) {
+    static class MainResult {
+        final String output;
+        final int status;
+
+        public MainResult(String output, int status) {
+            this.output = output;
+            this.status = status;
+        }
+    }
+
+    static MainResult handleMain(String[] arguments) {
         var valid_arguments = true;
         if (arguments.length < 1 ||
             arguments.length > 2) {
@@ -236,22 +246,32 @@ public final class UrlEncoder {
         }
 
         if (!valid_arguments) {
-            System.err.println("Usage : java " + UrlEncoder.class.getName() + " [-ed] text");
-            System.err.println("Encode and decode URL parameters.");
-            System.err.println("  -e  encode (default)");
-            System.err.println("  -d  decode");
-            System.exit(1);
+            return new MainResult("Usage : java " + UrlEncoder.class.getName() + " [-ed] text" + System.lineSeparator() +
+                                  "Encode and decode URL parameters." + System.lineSeparator() +
+                                  "  -e  encode (default)" + System.lineSeparator() +
+                                  "  -d  decode" + System.lineSeparator(), 1);
         }
 
         if (1 == arguments.length) {
-            System.out.println(UrlEncoder.encode(arguments[0]));
-            System.exit(0);
+            return new MainResult(UrlEncoder.encode(arguments[0]), 0);
         } else if (arguments[0].equals("-e")) {
-            System.out.println(UrlEncoder.encode(arguments[1]));
-            System.exit(0);
+            return new MainResult(UrlEncoder.encode(arguments[1]), 0);
         }
 
-        System.out.println(UrlEncoder.decode(arguments[1]));
-        System.exit(0);
+        return new MainResult(UrlEncoder.decode(arguments[1]), 0);
+    }
+
+    public static void main(String[] arguments) {
+        var result = handleMain(arguments);
+        switch (result.status) {
+            case 0: {
+                System.out.println(result.output);
+                System.exit(0);
+            }
+            case 1: {
+                System.err.println(result.output);
+                System.exit(1);
+            }
+        }
     }
 }
