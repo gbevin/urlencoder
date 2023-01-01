@@ -23,6 +23,7 @@ class UrlEncoderTest {
     @Test
     void testDecodeURL() {
         assertNull(UrlEncoder.decode(null));
+        assertSame("", UrlEncoder.decode(""));
         assertSame(same, UrlEncoder.decode(same));
         validMap.forEach((expected, source) -> assertEquals(expected, UrlEncoder.decode(source)));
 
@@ -59,6 +60,13 @@ class UrlEncoderTest {
     }
 
     @Test
+    void testMainWrongArgs1() {
+        var result = UrlEncoder.handleMain(new String[] {"-p"});
+        assertEquals(1, result.status);
+        assertTrue(result.output.contains(UrlEncoder.class.getName()));
+    }
+
+    @Test
     void testMainWrongArgs2() {
         var result = UrlEncoder.handleMain(new String[] {"-x", "txt"});
         assertEquals(1, result.status);
@@ -66,8 +74,8 @@ class UrlEncoderTest {
     }
 
     @Test
-    void testMainWrongArgs1() {
-        var result = UrlEncoder.handleMain(new String[] {"-p"});
+    void testMainWrongArgs3() {
+        var result = UrlEncoder.handleMain(new String[] {"stuff", "txt"});
         assertEquals(1, result.status);
         assertTrue(result.output.contains(UrlEncoder.class.getName()));
     }
