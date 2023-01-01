@@ -263,15 +263,12 @@ public final class UrlEncoder {
 
     public static void main(String[] arguments) {
         var result = handleMain(arguments);
-        switch (result.status) {
-            case 0: {
-                System.out.println(result.output);
-                System.exit(0);
-            }
-            case 1: {
-                System.err.println(result.output);
-                System.exit(1);
-            }
+        if (result.status == 0) {
+            System.out.println(result.output);
+            System.exit(0);
+        } else {
+            System.err.println(result.output);
+            System.exit(result.status);
         }
     }
 }
