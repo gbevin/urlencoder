@@ -74,6 +74,7 @@ publishing {
                         id.set("gbevin")
                         name.set("Geert Bevin")
                         email.set("gbevin@uwyn.com")
+                        url.set("https://github.com/gbevin")
                     }
                     developer {
                         id.set("ethauvin")
