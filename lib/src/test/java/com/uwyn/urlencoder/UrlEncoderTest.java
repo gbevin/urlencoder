@@ -95,6 +95,20 @@ class UrlEncoderTest {
     }
 
     @Test
+    void testMainWrongArgs4() {
+        var result = UrlEncoder.processMain(new String[] {"-d", "stuff", "txt"});
+        assertEquals(1, result.status);
+        assertTrue(result.output.contains("Usage :"));
+    }
+
+    @Test
+    void testMainWrongArgs5() {
+        var result = UrlEncoder.processMain(new String[] {"-e", "stuff", "txt"});
+        assertEquals(1, result.status);
+        assertTrue(result.output.contains("Usage :"));
+    }
+
+    @Test
     void testDecodeMainOption() {
         validMap.forEach((expected, source) -> {
             var result = UrlEncoder.processMain(new String[] {"-d", source});
