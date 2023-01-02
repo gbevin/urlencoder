@@ -270,12 +270,17 @@ public final class UrlEncoder {
      * @since 1.1
      */
     public static void main(String[] arguments) {
-        var result = processMain(arguments);
-        if (result.status == 0) {
-            System.out.println(result.output);
-        } else {
-            System.err.println(result.output);
+        try {
+            var result = processMain(arguments);
+            if (result.status == 0) {
+                System.out.println(result.output);
+            } else {
+                System.err.println(result.output);
+            }
+            System.exit(result.status);
+        } catch(IllegalArgumentException e) {
+            System.err.println(UrlEncoder.class.getSimpleName() + ": " + e.getMessage());
+            System.exit(1);
         }
-        System.exit(result.status);
     }
 }
