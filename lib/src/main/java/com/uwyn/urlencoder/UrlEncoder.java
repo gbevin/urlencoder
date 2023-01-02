@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2022 Geert Bevin (gbevin[remove] at uwyn dot com)
+ * Copyright 2001-2023 Geert Bevin (gbevin[remove] at uwyn dot com)
  * Licensed under the Apache License, Version 2.0 (the "License")
  */
 package com.uwyn.urlencoder;
@@ -167,7 +167,7 @@ public final class UrlEncoder {
      * @since 1.0
      */
     public static String encode(String source, String allow) {
-        if (source == null || source.isBlank()) {
+        if (source == null || source.isEmpty()) {
             return source;
         }
 
@@ -246,7 +246,7 @@ public final class UrlEncoder {
         }
 
         var text = "";
-        if (args.size() == 1) {
+        if (args.size() == 1 && !args.get(0).isEmpty()) {
             text = args.remove(0);
             valid_arguments = true;
         }
