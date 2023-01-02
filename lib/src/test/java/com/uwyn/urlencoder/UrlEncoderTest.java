@@ -37,17 +37,17 @@ class UrlEncoderTest {
         );
     }
 
-    @ParameterizedTest(name = "decode({0}) should be {1}")
-    @MethodSource("validMap")
-    void testDecodeUrl(String expected, String source) {
-        assertEquals(expected, UrlEncoder.decode(source));
-    }
-
     @Test
     void testDecodeNotNeeded() {
         assertSame(same, UrlEncoder.decode(same));
         assertEquals("", UrlEncoder.decode(""), "decode('')");
         assertEquals(" ", UrlEncoder.decode(" "), "decode(' ')");
+    }
+
+    @ParameterizedTest(name = "decode({0}) should be {1}")
+    @MethodSource("validMap")
+    void testDecodeUrl(String expected, String source) {
+        assertEquals(expected, UrlEncoder.decode(source));
     }
 
     @ParameterizedTest(name = "decode({0})")
@@ -59,6 +59,12 @@ class UrlEncoderTest {
     @Test
     void testDecodeWithNull() {
         assertNull(UrlEncoder.decode(null), "decode(null)");
+    }
+
+    @ParameterizedTest(name = "encode({0}) should be {1}")
+    @MethodSource("validMap")
+    void testEncodeUrl(String source, String expected) {
+        assertEquals(expected, UrlEncoder.encode(source));
     }
 
     @Test
@@ -80,12 +86,6 @@ class UrlEncoderTest {
         assertTrue(UrlEncoder.encode("", "").isEmpty(), "encode('','')");
         assertEquals("", UrlEncoder.encode(""), "encode('')");
         assertEquals("%20", UrlEncoder.encode(" "), "encode('')");
-    }
-
-    @ParameterizedTest(name = "encode({0}) should be {1}")
-    @MethodSource("validMap")
-    void testEncodeUrl(String source, String expected) {
-        assertEquals(expected, UrlEncoder.encode(source));
     }
 
     @Test
@@ -146,5 +146,11 @@ class UrlEncoderTest {
         var result = UrlEncoder.processMain(new String[]{"-e", source});
         assertEquals(expected, result.output);
         assertEquals(0, result.status, "processMain(-e " + source + ").status");
+    }
+
+    @Test
+    void testMainWithUnknownOptions() {
+        assertTrue(UrlEncoder.processMain(new String[]{"-p"}).output.contains("Usage :"), "processMain(-p)");
+        assertTrue(UrlEncoder.processMain(new String[]{"-"}).output.contains("Usage :"), "processMain(-)");
     }
 }
