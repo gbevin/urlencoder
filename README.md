@@ -28,11 +28,11 @@ also addresses these issues, but does not currently support [unicode surrogate p
 ## Examples (TL;DR)
 
 ```java
-UrlEncoder.encode("a test &"); // -> "a%20test%20%26"
-UrlEncoder.encode("%#okékÉȢ smile!😁"); // -> "%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"
+UrlEncoder.encode("a test &");           // -> "a%20test%20%26"
+UrlEncoder.encode("%#okékÉȢ smile!😁");  // -> "%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"
 UrlEncoder.encode("?test=a test", "?="); // -> ?test=a%20test
 
-UrlEncoder.decode("a%20test%20%26"); // -> "a test &"
+UrlEncoder.decode("a%20test%20%26");     // -> "a test &"
 UrlEncoder.decode("%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"); // -> "%#okékÉȢ smile!😁"
 ```
 
@@ -46,3 +46,45 @@ dependencies {
 ```
 
 Instructions for using with Maven, Ivy, etc. can be found on [Maven Central](https://maven-badges.herokuapp.com/maven-central/com.uwyn/urlencoder).
+
+## Standalone usage
+
+UrlEncoder can be used on the command line also, both for encoding and decoding.
+
+You have two options:
+* run it with Gradle
+* build the jar and launch it with Java
+
+The usage is as follows:
+
+```
+Encode and decode URL parameters.
+  -e  encode (default)
+  -d  decode
+```
+
+### Running with Gradle
+
+```shell
+./gradlew run --args="-e 'a test &'"        # -> a%20test%20%26
+./gradlew run --args="%#okékÉȢ"             # -> %25%23ok%C3%A9k%C3%89%C8%A2
+
+./gradlew run --args="-d 'a%20test%20%26'"  # -> a test &
+```
+
+### Running with Java
+
+First build the jar file:
+
+```shell
+./gradlew clean jar
+```
+
+Then run it:
+
+```shell
+java -jar lib/build/libs/urlencoder-*.jar -e "a test &"       # -> a%20test%20%26
+java -jar lib/build/libs/urlencoder-*.jar "%#okékÉȢ"          # -> %25%23ok%C3%A9k%C3%89%C8%A2
+
+java -jar lib/build/libs/urlencoder-*.jar -d "a%20test%20%26" # -> a test &
+```
