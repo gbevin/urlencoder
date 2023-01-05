@@ -112,7 +112,7 @@ publishing {
             from(components["java"])
             pom {
                 name.set(mavenName)
-                description.set("A simple library to encode/decode URL parameters")
+                description.set("A simple defensive library to encode/decode URL components")
                 url.set("https://github.com/gbevin/urlencoder")
                 licenses {
                     license {
