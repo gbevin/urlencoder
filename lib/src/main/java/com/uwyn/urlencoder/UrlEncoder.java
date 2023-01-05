@@ -8,9 +8,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * URL encoding and decoding.
+ * Most defensive approach to URL encoding and decoding.
  * <p>
- * Rules determined by <a href="https://www.rfc-editor.org/rfc/rfc3986#page-13">RFC 3986</a>.
+ * Rules determined by combining the unreserved character set from
+ * <a href="https://www.rfc-editor.org/rfc/rfc3986#page-13">RFC 3986</a> with
+ * the percent-encode set from
+ * <a href="https://url.spec.whatwg.org/#application-x-www-form-urlencoded-percent-encode-set">application/x-www-form-urlencoded</a>.
+ * <p>
+ * Both specs above support percent decoding of two hexadecimal digits to a
+ * binary octet, however their unreserved set of characters differs and
+ * {@code application/x-www-form-urlencoded} adds conversion of space to +,
+ * which has the potential to be misunderstood.
+ * <p>
+ * This class encodes with rules that will be decoded correctly in either case.
  *
  * @author Geert Bevin (gbevin[remove] at uwyn dot com)
  * @author Erik C. Thauvin (erik@thauvin.net)
@@ -22,14 +32,13 @@ public final class UrlEncoder {
 
     static {
         // see https://www.rfc-editor.org/rfc/rfc3986#page-13
-        var unreserved = new BitSet('~' + 1);
+        var unreserved = new BitSet('z' + 1);
         unreserved.set('-');
         unreserved.set('.');
         for (int c = '0'; c <= '9'; ++c) unreserved.set(c);
         for (int c = 'A'; c <= 'Z'; ++c) unreserved.set(c);
         unreserved.set('_');
         for (int c = 'a'; c <= 'z'; ++c) unreserved.set(c);
-        unreserved.set('~');
         UNRESERVED_URI_CHARS = unreserved;
     }
 
@@ -216,7 +225,7 @@ public final class UrlEncoder {
 
     // see https://www.rfc-editor.org/rfc/rfc3986#page-13
     private static boolean isUnreservedUriChar(char ch) {
-        return ch <= '~' && UNRESERVED_URI_CHARS.get(ch);
+        return ch <= 'z' && UNRESERVED_URI_CHARS.get(ch);
     }
 
     static class MainResult {
