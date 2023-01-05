@@ -32,6 +32,7 @@ public final class UrlEncoder {
 
     static {
         // see https://www.rfc-editor.org/rfc/rfc3986#page-13
+        // and https://url.spec.whatwg.org/#application-x-www-form-urlencoded-percent-encode-set
         var unreserved = new BitSet('z' + 1);
         unreserved.set('-');
         unreserved.set('.');
@@ -224,6 +225,7 @@ public final class UrlEncoder {
     }
 
     // see https://www.rfc-editor.org/rfc/rfc3986#page-13
+    // and https://url.spec.whatwg.org/#application-x-www-form-urlencoded-percent-encode-set
     private static boolean isUnreservedUriChar(char ch) {
         return ch <= 'z' && UNRESERVED_URI_CHARS.get(ch);
     }
@@ -262,7 +264,7 @@ public final class UrlEncoder {
 
         if (!valid_arguments) {
             return new MainResult("Usage : java -jar urlencoder-*.jar [-ed] text" + System.lineSeparator() +
-                                  "Encode and decode URL parameters." + System.lineSeparator() +
+                                  "Encode and decode URL components defensively." + System.lineSeparator() +
                                   "  -e  encode (default)" + System.lineSeparator() +
                                   "  -d  decode", 1);
         }
