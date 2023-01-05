@@ -28,7 +28,8 @@ This class encodes with rules that will be decoded correctly in either case.
 Additionally, this library allocates no memory when encoding isn't needed and
 does the work in a single pass without multiple loops. Both of these
 optimizations have a significantly beneficial impact on performance of encoding
-compared to other solutions like the standard `URLEncoder` in the JDK.
+compared to other solutions like the standard `URLEncoder` in the JDK or
+`UriUtils` in Spring.
 
 ## Examples (TL;DR)
 
