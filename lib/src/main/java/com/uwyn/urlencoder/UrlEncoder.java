@@ -69,6 +69,20 @@ public final class UrlEncoder {
      * @since 1.0
      */
     public static String decode(String source) {
+        return decode(source, false);
+    }
+
+    /**
+     * Transforms a provided <code>String</code> URL into a new string,
+     * containing decoded URL characters in the UTF-8 encoding.
+     *
+     * @param source      The string URL that has to be decoded
+     * @param plusToSpace Convert any {@code +} to space.
+     * @return The decoded <code>String</code> object.
+     * @see #encode(String, String)
+     * @since 1.0
+     */
+    public static String decode(String source, boolean plusToSpace) {
         if (source == null || source.isEmpty()) {
             return source;
         }
@@ -83,10 +97,7 @@ public final class UrlEncoder {
             ch = source.charAt(i);
 
             if (ch == '%') {
-                if (out == null) {
-                    out = new StringBuilder(length);
-                    out.append(source, 0, i);
-                }
+                out = startConstructingIfNeeded(out, source, i);
 
                 if (bytes_buffer == null) {
                     // the remaining characters divided by the length
@@ -119,7 +130,10 @@ public final class UrlEncoder {
                     bytes_pos = 0;
                 }
 
-                if (out != null) {
+                if (plusToSpace && ch == '+') {
+                    out = startConstructingIfNeeded(out, source, i);
+                    out.append(" ");
+                } else if (out != null) {
                     out.append(ch);
                 }
 
@@ -136,6 +150,14 @@ public final class UrlEncoder {
         }
 
         return out.toString();
+    }
+
+    private static StringBuilder startConstructingIfNeeded(StringBuilder out, String source, int currentSourcePosition) {
+        if (out == null) {
+            out = new StringBuilder(source.length());
+            out.append(source, 0, currentSourcePosition);
+        }
+        return out;
     }
 
     /**
@@ -210,10 +232,8 @@ public final class UrlEncoder {
                 }
                 i += 1;
             } else {
-                if (out == null) {
-                    out = new StringBuilder(source.length());
-                    out.append(source, 0, i);
-                }
+                out = startConstructingIfNeeded(out, source, i);
+
                 var cp = source.codePointAt(i);
                 if (cp < 0x80) {
                     if (spaceToPlus && ch == ' ') {

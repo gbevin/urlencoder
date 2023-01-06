@@ -101,6 +101,13 @@ class UrlEncoderTest {
         assertEquals("foo bar", UrlEncoder.encode("foo bar", " ", true));
     }
 
+    @Test
+    void testDecodePlusToSpace() {
+        assertEquals("foo bar", UrlEncoder.decode("foo+bar", true));
+        assertEquals("foo bar  foo", UrlEncoder.decode("foo+bar++foo", true));
+        assertEquals("foo  bar  foo", UrlEncoder.decode("foo+%20bar%20+foo", true));
+    }
+
     @ParameterizedTest(name = "processMain(-d {1}) should be {0}")
     @MethodSource("validMap")
     void testMainDecode(String expected, String source) {
