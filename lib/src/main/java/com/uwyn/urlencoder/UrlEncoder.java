@@ -5,7 +5,9 @@
 package com.uwyn.urlencoder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
 
 /**
  * Most defensive approach to URL encoding and decoding.
@@ -43,6 +45,10 @@ public final class UrlEncoder {
         UNRESERVED_URI_CHARS = unreserved;
     }
 
+    private UrlEncoder() {
+        // no-op
+    }
+
     private static void appendUrlEncodedByte(StringBuilder out, int ch) {
         out.append("%");
         appendUrlEncodedDigit(out, ch >> 4);
@@ -51,10 +57,6 @@ public final class UrlEncoder {
 
     private static void appendUrlEncodedDigit(StringBuilder out, int digit) {
         out.append(HEX_DIGITS[digit & 0x0F]);
-    }
-
-    private UrlEncoder() {
-        // no-op
     }
 
     /**
@@ -67,7 +69,7 @@ public final class UrlEncoder {
      * @since 1.0
      */
     public static String decode(String source) {
-        if (source == null || source.isBlank()) {
+        if (source == null || source.isEmpty()) {
             return source;
         }
 
@@ -107,7 +109,7 @@ public final class UrlEncoder {
 
                     i += 2;
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Illegal characters in escape sequence: " + e.getMessage());
+                    throw new IllegalArgumentException("Illegal characters in escape sequence: " + e.getMessage(), e);
                 }
             } else {
                 if (bytes_buffer != null) {
@@ -147,22 +149,7 @@ public final class UrlEncoder {
      * @since 1.0
      */
     public static String encode(String source) {
-        return encode(source, (String) null);
-    }
-
-    /**
-     * Transforms a provided <code>String</code> object into a new string,
-     * containing only valid URL characters in the UTF-8 encoding.
-     *
-     * @param source The string that has to be transformed into a valid URL
-     *               string.
-     * @param allow  Additional characters to allow.
-     * @return The encoded <code>String</code> object.
-     * @see #decode(String)
-     * @since 1.0
-     */
-    public static String encode(String source, char... allow) {
-        return encode(source, new String(allow));
+        return encode(source, null, false);
     }
 
     /**
@@ -177,6 +164,37 @@ public final class UrlEncoder {
      * @since 1.0
      */
     public static String encode(String source, String allow) {
+        return encode(source, allow, false);
+    }
+
+    /**
+     * Transforms a provided <code>String</code> object into a new string,
+     * containing only valid URL characters in the UTF-8 encoding.
+     *
+     * @param source      The string that has to be transformed into a valid URL
+     *                    string.
+     * @param spaceToPlus Convert any space to {@code +}.
+     * @return The encoded <code>String</code> object.
+     * @see #decode(String)
+     * @since 1.0
+     */
+    public static String encode(String source, boolean spaceToPlus) {
+        return encode(source, null, spaceToPlus);
+    }
+
+    /**
+     * Transforms a provided <code>String</code> object into a new string,
+     * containing only valid URL characters in the UTF-8 encoding.
+     *
+     * @param source      The string that has to be transformed into a valid URL
+     *                    string.
+     * @param allow       Additional characters to allow.
+     * @param spaceToPlus Convert any space to {@code +}.
+     * @return The encoded <code>String</code> object.
+     * @see #decode(String)
+     * @since 1.0
+     */
+    public static String encode(String source, String allow, boolean spaceToPlus) {
         if (source == null || source.isEmpty()) {
             return source;
         }
@@ -196,23 +214,27 @@ public final class UrlEncoder {
                     out = new StringBuilder(source.length());
                     out.append(source, 0, i);
                 }
-
-                var cp = source.codePointAt(i);
-                if (cp < 0x80) {
-                    appendUrlEncodedByte(out, cp);
+                if (spaceToPlus && ch == ' ') {
+                    out.append('+');
                     i += 1;
-                } else if (Character.isBmpCodePoint(cp)) {
-                    for (var b : Character.toString(ch).getBytes(StandardCharsets.UTF_8)) {
-                        appendUrlEncodedByte(out, b);
+                } else {
+                    var cp = source.codePointAt(i);
+                    if (cp < 0x80) {
+                        appendUrlEncodedByte(out, cp);
+                        i += 1;
+                    } else if (Character.isBmpCodePoint(cp)) {
+                        for (var b : Character.toString(ch).getBytes(StandardCharsets.UTF_8)) {
+                            appendUrlEncodedByte(out, b);
+                        }
+                        i += 1;
+                    } else if (Character.isSupplementaryCodePoint(cp)) {
+                        var high = Character.highSurrogate(cp);
+                        var low = Character.lowSurrogate(cp);
+                        for (var b : new String(new char[]{high, low}).getBytes(StandardCharsets.UTF_8)) {
+                            appendUrlEncodedByte(out, b);
+                        }
+                        i += 2;
                     }
-                    i += 1;
-                } else if (Character.isSupplementaryCodePoint(cp)) {
-                    var high = Character.highSurrogate(cp);
-                    var low = Character.lowSurrogate(cp);
-                    for (var b : new String(new char[]{high, low}).getBytes(StandardCharsets.UTF_8)) {
-                        appendUrlEncodedByte(out, b);
-                    }
-                    i += 2;
                 }
             }
         }
@@ -230,26 +252,37 @@ public final class UrlEncoder {
         return ch <= 'z' && UNRESERVED_URI_CHARS.get(ch);
     }
 
-    static class MainResult {
-        final String output;
-        final int status;
-
-        public MainResult(String output, int status) {
-            this.output = output;
-            this.status = status;
+    /**
+     * Main method to encode/decode URLs on the command line
+     *
+     * @param arguments the command line arguments
+     * @since 1.1
+     */
+    public static void main(String[] arguments) {
+        try {
+            var result = processMain(arguments);
+            if (result.status == 0) {
+                System.out.println(result.output);
+            } else {
+                System.err.println(result.output);
+            }
+            System.exit(result.status);
+        } catch (IllegalArgumentException e) {
+            System.err.println(UrlEncoder.class.getSimpleName() + ": " + e.getMessage());
+            System.exit(1);
         }
     }
 
-    static MainResult processMain(String[] arguments) {
+    static MainResult processMain(String... arguments) {
         var valid_arguments = false;
         var perform_decode = false;
         var args = new ArrayList<>(List.of(arguments));
         if (!args.isEmpty() && args.get(0).startsWith("-")) {
             var option = args.remove(0);
-            if (option.equals("-d")) {
+            if (("-d").equals(option)) {
                 perform_decode = true;
                 valid_arguments = (args.size() == 1);
-            } else if (option.equals("-e")) {
+            } else if (("-e").equals(option)) {
                 valid_arguments = (args.size() == 1);
             } else {
                 args.clear();
@@ -275,23 +308,13 @@ public final class UrlEncoder {
         }
     }
 
-    /**
-     * Main method to encode/decode URLs on the command line
-     * @param arguments the command line arguments
-     * @since 1.1
-     */
-    public static void main(String[] arguments) {
-        try {
-            var result = processMain(arguments);
-            if (result.status == 0) {
-                System.out.println(result.output);
-            } else {
-                System.err.println(result.output);
-            }
-            System.exit(result.status);
-        } catch(IllegalArgumentException e) {
-            System.err.println(UrlEncoder.class.getSimpleName() + ": " + e.getMessage());
-            System.exit(1);
+    static class MainResult {
+        final String output;
+        final int status;
+
+        public MainResult(String output, int status) {
+            this.output = output;
+            this.status = status;
         }
     }
 }

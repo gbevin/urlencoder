@@ -75,7 +75,7 @@ tasks {
 
                     if (project.properties["testsBadgeApiKey"] != null) {
                         val apiKey = project.properties["testsBadgeApiKey"]
-                        val response: java.net.http.HttpResponse<String> = HttpClient.newHttpClient()
+                        val response: HttpResponse<String> = HttpClient.newHttpClient()
                             .send(
                                 HttpRequest.newBuilder()
                                     .uri(

@@ -37,6 +37,7 @@ compared to other solutions like the standard `URLEncoder` in the JDK or
 UrlEncoder.encode("a test &");           // -> "a%20test%20%26"
 UrlEncoder.encode("%#okékÉȢ smile!😁");  // -> "%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"
 UrlEncoder.encode("?test=a test", "?="); // -> ?test=a%20test
+UrlEncoder.encode("foo bar", true);      // -> foo+bar        
 
 UrlEncoder.decode("a%20test%20%26");     // -> "a test &"
 UrlEncoder.decode("%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"); // -> "%#okékÉȢ smile!😁"

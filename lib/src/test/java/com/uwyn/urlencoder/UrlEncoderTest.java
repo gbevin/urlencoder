@@ -75,10 +75,9 @@ class UrlEncoderTest {
 
     @Test
     void testEncodeWithAllowArg() {
-        assertEquals("?test=a%20test", UrlEncoder.encode("?test=a test", '=', '?'), "encode(x, =, ?)");
         assertEquals("?test=a%20test", UrlEncoder.encode("?test=a test", "=?"), "encode(x, =?)");
-        assertEquals("aaa", UrlEncoder.encode("aaa", 'a'), "encode(aaa, a)");
-        assertEquals(" ", UrlEncoder.encode(" ", ' '), "encode(' ', ' ')");
+        assertEquals("aaa", UrlEncoder.encode("aaa", "a"), "encode(aaa, a)");
+        assertEquals(" ", UrlEncoder.encode(" ", " "), "encode(' ', ' ')");
     }
 
     @Test
@@ -91,8 +90,15 @@ class UrlEncoderTest {
     @Test
     void testEncodeWithNulls() {
         assertNull(UrlEncoder.encode(null), "encode(null)");
-        assertNull(UrlEncoder.encode(null, (String) null), "encode(null, null)");
-        assertEquals("foo", UrlEncoder.encode("foo", (String) null), "encode(foo, null");
+        assertNull(UrlEncoder.encode(null, null), "encode(null, null)");
+        assertEquals("foo", UrlEncoder.encode("foo",  null), "encode(foo, null");
+    }
+
+    @Test
+    void testEncodeSpaceToPlus() {
+        assertEquals("foo+bar", UrlEncoder.encode("foo bar", true));
+        assertEquals("foo+bar++foo", UrlEncoder.encode("foo bar  foo", true));
+        assertEquals("foo bar", UrlEncoder.encode("foo bar", " ", true));
     }
 
     @ParameterizedTest(name = "processMain(-d {1}) should be {0}")
