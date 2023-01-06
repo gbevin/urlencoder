@@ -41,7 +41,7 @@ UrlEncoder.encode("foo bar", true);      // -> "foo+bar" (encode space to +)
 
 UrlEncoder.decode("a%20test%20%26");     // -> "a test &"
 UrlEncoder.decode("%25%23ok%C3%A9k%C3%89%C8%A2%20smile%21%F0%9F%98%81"); // -> "%#okékÉȢ smile!😁"
-UrlEncoder.decode("foot+bar", true);     // -> "foo bar" (decode + to space)
+UrlEncoder.decode("foo+bar", true);      // -> "foo bar" (decode + to space)
 ```
 
 ## Gradle, Maven, etc.
