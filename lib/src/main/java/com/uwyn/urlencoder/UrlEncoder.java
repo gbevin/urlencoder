@@ -214,27 +214,26 @@ public final class UrlEncoder {
                     out = new StringBuilder(source.length());
                     out.append(source, 0, i);
                 }
-                if (spaceToPlus && ch == ' ') {
-                    out.append('+');
-                    i += 1;
-                } else {
-                    var cp = source.codePointAt(i);
-                    if (cp < 0x80) {
+                var cp = source.codePointAt(i);
+                if (cp < 0x80) {
+                    if (spaceToPlus && ch == ' ') {
+                        out.append('+');
+                    } else {
                         appendUrlEncodedByte(out, cp);
-                        i += 1;
-                    } else if (Character.isBmpCodePoint(cp)) {
-                        for (var b : Character.toString(ch).getBytes(StandardCharsets.UTF_8)) {
-                            appendUrlEncodedByte(out, b);
-                        }
-                        i += 1;
-                    } else if (Character.isSupplementaryCodePoint(cp)) {
-                        var high = Character.highSurrogate(cp);
-                        var low = Character.lowSurrogate(cp);
-                        for (var b : new String(new char[]{high, low}).getBytes(StandardCharsets.UTF_8)) {
-                            appendUrlEncodedByte(out, b);
-                        }
-                        i += 2;
                     }
+                    i += 1;
+                } else if (Character.isBmpCodePoint(cp)) {
+                    for (var b : Character.toString(ch).getBytes(StandardCharsets.UTF_8)) {
+                        appendUrlEncodedByte(out, b);
+                    }
+                    i += 1;
+                } else if (Character.isSupplementaryCodePoint(cp)) {
+                    var high = Character.highSurrogate(cp);
+                    var low = Character.lowSurrogate(cp);
+                    for (var b : new String(new char[]{high, low}).getBytes(StandardCharsets.UTF_8)) {
+                        appendUrlEncodedByte(out, b);
+                    }
+                    i += 2;
                 }
             }
         }

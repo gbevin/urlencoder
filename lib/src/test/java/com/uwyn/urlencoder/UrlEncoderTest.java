@@ -104,7 +104,7 @@ class UrlEncoderTest {
     @ParameterizedTest(name = "processMain(-d {1}) should be {0}")
     @MethodSource("validMap")
     void testMainDecode(String expected, String source) {
-        var result = UrlEncoder.processMain(new String[]{"-d", source});
+        var result = UrlEncoder.processMain("-d", source);
         assertEquals(expected, result.output);
         assertEquals(0, result.status, "processMain(-d " + source + ").status");
     }
@@ -112,7 +112,7 @@ class UrlEncoderTest {
     @ParameterizedTest(name = "processMain(-e {0})")
     @MethodSource("validMap")
     void testMainEncode(String source, String expected) {
-        var result = UrlEncoder.processMain(new String[]{source});
+        var result = UrlEncoder.processMain(source);
         assertEquals(expected, result.output);
         assertEquals(0, result.status, "processMain(-e " + source + ").status");
     }
@@ -120,20 +120,20 @@ class UrlEncoderTest {
     @ParameterizedTest(name = "processMain(-d {0})")
     @MethodSource("invalid")
     void testMainEncodeWithExceptions(String source) {
-        assertThrows(IllegalArgumentException.class, () -> UrlEncoder.processMain(new String[]{"-d", source}), source);
+        assertThrows(IllegalArgumentException.class, () -> UrlEncoder.processMain("-d", source), source);
     }
 
     @Test
     void testMainTooManyArgs() {
-        assertTrue(UrlEncoder.processMain(new String[]{"foo", "bar", "test"}).output.contains("Usage :"), "too many args");
+        assertTrue(UrlEncoder.processMain("foo", "bar", "test").output.contains("Usage :"), "too many args");
     }
 
     @Test
     void testMainWithEmptyArgs() {
-        assertTrue(UrlEncoder.processMain(new String[]{" ", " "}).output.contains("Usage :"), "processMain(' ', ' ')");
-        assertTrue(UrlEncoder.processMain(new String[]{"foo", " "}).output.contains("Usage :"), "processMain('foo', ' ')");
-        assertTrue(UrlEncoder.processMain(new String[]{" ", "foo"}).output.contains("Usage :"), "processMain(' ', 'foo')");
-        assertTrue(UrlEncoder.processMain(new String[]{"-d ", ""}).output.contains("Usage :"), "processMain('-d', '')");
+        assertTrue(UrlEncoder.processMain(" ", " ").output.contains("Usage :"), "processMain(' ', ' ')");
+        assertTrue(UrlEncoder.processMain("foo", " ").output.contains("Usage :"), "processMain('foo', ' ')");
+        assertTrue(UrlEncoder.processMain(" ", "foo").output.contains("Usage :"), "processMain(' ', 'foo')");
+        assertTrue(UrlEncoder.processMain("-d ", "").output.contains("Usage :"), "processMain('-d', '')");
         assertEquals("%20", UrlEncoder.processMain(new String[]{"-e", " "}).output, "processMain('-e', ' ')");
         assertEquals(" ", UrlEncoder.processMain(new String[]{"-d", " "}).output, "processMain('-d', ' ')");
     }
@@ -141,7 +141,7 @@ class UrlEncoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"", "-d", "-e"})
     void testMainWithInvalidArgs(String arg) {
-        var result = UrlEncoder.processMain(new String[]{arg});
+        var result = UrlEncoder.processMain(arg);
         assertTrue(result.output.contains("Usage :"), "processMain('" + arg + "')");
         assertEquals(1, result.status, "processMain('" + arg + "').status");
     }
@@ -149,14 +149,14 @@ class UrlEncoderTest {
     @ParameterizedTest(name = "processMain(-e {0})")
     @MethodSource("validMap")
     void testMainWithOption(String source, String expected) {
-        var result = UrlEncoder.processMain(new String[]{"-e", source});
+        var result = UrlEncoder.processMain("-e", source);
         assertEquals(expected, result.output);
         assertEquals(0, result.status, "processMain(-e " + source + ").status");
     }
 
     @Test
     void testMainWithUnknownOptions() {
-        assertTrue(UrlEncoder.processMain(new String[]{"-p"}).output.contains("Usage :"), "processMain(-p)");
-        assertTrue(UrlEncoder.processMain(new String[]{"-"}).output.contains("Usage :"), "processMain(-)");
+        assertTrue(UrlEncoder.processMain("-p").output.contains("Usage :"), "processMain(-p)");
+        assertTrue(UrlEncoder.processMain("-").output.contains("Usage :"), "processMain(-)");
     }
 }
