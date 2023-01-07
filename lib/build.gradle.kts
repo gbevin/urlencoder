@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "com.uwyn"
-version = "1.3.0"
+version = "1.3.1-SNAPSHOT"
 
 val mavenName = "UrlEncoder"
 val javaMainClass = "$group.${rootProject.name}.$mavenName"
