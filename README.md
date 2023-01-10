@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Java](https://img.shields.io/badge/java-11%2B-blue)](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html)
-[![Nexus Snapshot](https://img.shields.io/nexus/s/com.uwyn/urlencoder?server=https%3A%2F%2Fs01.oss.sonatype.org%2F)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/uwyn/urlencoder/)
+[![Nexus Snapshot](https://img.shields.io/nexus/s/com.uwyn/urlencoder?label=snapshot&server=https%3A%2F%2Fs01.oss.sonatype.org%2F)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/uwyn/urlencoder/)
 [![Release](https://img.shields.io/github/release/gbevin/urlencoder.svg)](https://github.com/gbevin/urlencoder/releases/latest)
 [![Maven Central Repo](https://maven-badges.herokuapp.com/maven-central/com.uwyn/urlencoder/badge.svg?color=blue)](https://maven-badges.herokuapp.com/maven-central/com.uwyn/urlencoder)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gbevin_urlencoder&metric=alert_status)](https://sonarcloud.io/dashboard?id=gbevin_urlencoder)
@@ -104,28 +104,28 @@ Apart for being quite inefficient, some URL components encoded with `URLEncoder.
 
 For example, a simply search query such as:
 
-```kotlin
-var u = URLEncoder.encode("foo + bar", StandardCharsets.UTF_8);
+```java
+var u = URLEncoder.encode("foo +bar", StandardCharsets.UTF_8);
 ```
 
 would be encoded as:
 
 ```
-foo+%28+bar
+foo+%2Bbar
 ```
 
 Trying to decode it with [Spring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/util/UriUtils.html#decode(java.lang.String,java.lang.String)), for example:
 
-```kotlin
+```java
 UriUtils.decode(u, StandardCharsets.UTF_8));
 ```
 
 would return:
 
 ```
-foo+++bar
+foo++bar
 ```
 
 Unfortunately, decoding with [Uri.decode](https://developer.android.com/reference/android/net/Uri#decode(java.lang.String)) on Android, [decodeURI](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI) in Javascript, etc. would yield the exact same result.
 
-![URLEncoder](https://live.staticflickr.com/65535/52607534147_dee4a5a390_c.jpg)
+![URLEncoder](https://live.staticflickr.com/65535/52607534147_6197b42666_z.jpg)
