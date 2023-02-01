@@ -36,7 +36,7 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-w
+
       - name: Test with Gradle
         uses: gradle/gradle-build-action@v2
         with:
