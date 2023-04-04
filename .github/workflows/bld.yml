@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        java-version: [ 11, 17, 19, 20 ]
+        java-version: [ 17, 19, 20 ]
 
     steps:
       - name: Checkout source repository
