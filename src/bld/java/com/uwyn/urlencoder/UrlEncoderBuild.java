@@ -17,7 +17,7 @@ public class UrlEncoderBuild extends Project {
         pkg = "com.uwyn.urlencoder";
         name = "UrlEncoder";
         mainClass = "com.uwyn.urlencoder.UrlEncoder";
-        version = version(1,3,1,"SNAPSHOT");
+        version = version(1,3,1);
 
         publishRepository = version.isSnapshot() ? repository("sonatype-snapshots") : repository("sonatype-releases");
         publishInfo = new PublishInfo()
