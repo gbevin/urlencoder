@@ -22,7 +22,7 @@ public class UrlEncoderBuild extends Project {
         publishRepository = version.isSnapshot() ? repository("sonatype-snapshots") : repository("sonatype-releases");
         publishInfo = new PublishInfo()
             .groupId("com.uwyn")
-            .artifactId("UrlEncoder")
+            .artifactId("urlencoder")
             .description("A simple defensive library to encode/decode URL components.")
             .url("https://github.com/rife2/tests-badge")
             .developer(new PublishDeveloper()
