@@ -2,12 +2,15 @@ package com.uwyn.urlencoder;
 
 import rife.bld.Project;
 import rife.bld.extension.TestsBadgeOperation;
+import rife.bld.operations.JarOperation;
 import rife.bld.publish.PublishDeveloper;
 import rife.bld.publish.PublishInfo;
 import rife.bld.publish.PublishLicense;
 import rife.bld.publish.PublishScm;
 
 import java.util.List;
+import java.util.Map;
+import java.util.jar.Attributes;
 
 import static rife.bld.dependencies.Repository.*;
 import static rife.bld.dependencies.Scope.*;
@@ -17,7 +20,7 @@ public class UrlEncoderBuild extends Project {
         pkg = "com.uwyn.urlencoder";
         name = "UrlEncoder";
         mainClass = "com.uwyn.urlencoder.UrlEncoder";
-        version = version(1,3,1);
+        version = version(1,3,2);
 
         publishRepository = version.isSnapshot() ? repository("sonatype-snapshots") : repository("sonatype-releases");
         publishInfo = new PublishInfo()
@@ -55,13 +58,21 @@ public class UrlEncoderBuild extends Project {
     }
 
     private final TestsBadgeOperation testsBadgeOperation = new TestsBadgeOperation();
-
     public void test()
     throws Exception {
         testsBadgeOperation.executeOnce(() -> testsBadgeOperation
             .url(property("testsBadgeUrl"))
             .apiKey(property("testsBadgeApiKey"))
             .fromProject(this));
+    }
+
+    private final JarOperation jarOperation = new JarOperation();
+    public void jar()
+    throws Exception {
+        compile();
+        jarOperation.executeOnce(() -> jarOperation
+            .fromProject(this)
+            .manifestAttributes(Map.of(Attributes.Name.MAIN_CLASS, mainClass())));
     }
 
     public static void main(String[] args) {
