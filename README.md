@@ -3,8 +3,7 @@
 [![Nexus Snapshot](https://img.shields.io/nexus/s/com.uwyn/urlencoder?label=snapshot&server=https%3A%2F%2Fs01.oss.sonatype.org%2F)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/uwyn/urlencoder/)
 [![Release](https://img.shields.io/github/release/gbevin/urlencoder.svg)](https://github.com/gbevin/urlencoder/releases/latest)
 [![Maven Central Repo](https://maven-badges.herokuapp.com/maven-central/com.uwyn/urlencoder/badge.svg?color=blue)](https://maven-badges.herokuapp.com/maven-central/com.uwyn/urlencoder)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gbevin_urlencoder&metric=alert_status)](https://sonarcloud.io/dashboard?id=gbevin_urlencoder)
-[![GitHub CI](https://github.com/gbevin/urlencoder/actions/workflows/gradle.yml/badge.svg)](https://github.com/gbevin/urlencoder/actions/workflows/gradle.yml)
+[![GitHub CI](https://github.com/gbevin/urlencoder/actions/workflows/bld.yml/badge.svg)](https://github.com/gbevin/urlencoder/actions/workflows/bld.yml)
 [![Tests](https://rife2.com/tests-badge/badge/com.uwyn/urlencoder)](https://github.com/gbevin/urlencoder/actions/workflows/gradle.yml)
 
 # URL Encoder for Java
