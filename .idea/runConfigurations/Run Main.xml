@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Main" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="com.uwyn.urlencoder.UrlEncoderMain" />
+    <option name="MAIN_CLASS_NAME" value="com.uwyn.urlencoder.UrlEncoder" />
     <module name="app" />
     <method v="2">
       <option name="Make" enabled="true" />

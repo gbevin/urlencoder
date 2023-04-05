@@ -5,7 +5,7 @@
             "type": "java",
             "name": "Run Main",
             "request": "launch",
-            "mainClass": "com.uwyn.urlencoder.UrlEncoderMain"
+            "mainClass": "com.uwyn.urlencoder.UrlEncoder"
         },
         {
             "type": "java",
