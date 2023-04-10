@@ -9,7 +9,6 @@ import rife.bld.publish.PublishLicense;
 import rife.bld.publish.PublishScm;
 
 import java.util.List;
-import java.util.Map;
 import java.util.jar.Attributes;
 
 import static rife.bld.dependencies.Repository.*;
@@ -20,7 +19,7 @@ public class UrlEncoderBuild extends Project {
         pkg = "com.uwyn.urlencoder";
         name = "UrlEncoder";
         mainClass = "com.uwyn.urlencoder.UrlEncoder";
-        version = version(1,3,3);
+        version = version(1,3,4);
 
         javaRelease = 11;
         downloadSources = true;
