@@ -27,8 +27,8 @@ public class UrlEncoderBuild extends Project {
 
         repositories = List.of(MAVEN_CENTRAL, RIFE2_RELEASES);
         scope(test)
-            .include(dependency("org.junit.jupiter", "junit-jupiter", version(5,9,2)))
-            .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1,9,2)));
+            .include(dependency("org.junit.jupiter", "junit-jupiter", version(5,9,3)))
+            .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1,9,3)));
 
         jarOperation()
             .manifestAttribute(Attributes.Name.MAIN_CLASS, mainClass());
