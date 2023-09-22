@@ -11,7 +11,7 @@
 A simple defensive library to encode/decode URL components.
 
 This library was extracted from the [RIFE2 Web Application Framework](https://rife2.com).  
-A Kotlin version can also be found at [https://github.com/ethauvin/urlencoder](https://github.com/ethauvin/urlencoder).
+A Kotlin Multiplatform version can also be found at [https://github.com/ethauvin/urlencoder](https://github.com/ethauvin/urlencoder).
 
 The rules are determined by combining the unreserved character set from
 [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986#page-13) with the
